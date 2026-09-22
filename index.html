@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Deutsch">
+<meta name="theme-color" content="#F6F3EE">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<link rel="manifest" href="manifest.json">
+<title>Täglich Deutsch</title>
+<style>
+:root{
+  --paper:#F6F3EE; --card:#FFFFFF; --ink:#1B1B1F; --dim:#6B6A70; --line:#E4DFD6;
+  --red:#A8322D; --gold:#C8961E; --ok:#2E6B4F; --bad:#A8322D; --soft:#F1ECE4;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*:before,*:after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:16px/1.55 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+  -webkit-text-size-adjust:100%}
+.wrap{max-width:640px;margin:0 auto;padding:18px 16px 110px}
+h1,h2,h3{font-family:"New York",Georgia,"Times New Roman",serif;letter-spacing:-.01em}
+.top{display:flex;justify-content:space-between;align-items:flex-end;margin:6px 0 16px}
+.top h1{font-size:30px;margin:0;line-height:1}
+.top h1 span{color:var(--red)}
+.meta{font-size:12px;color:var(--dim);text-align:right;line-height:1.4}
+.meta b{color:var(--ink);font-size:15px}
+.flag{height:4px;border-radius:2px;display:flex;overflow:hidden;margin-bottom:18px}
+.flag i{flex:1}.flag i:nth-child(1){background:#1B1B1F}.flag i:nth-child(2){background:var(--red)}.flag i:nth-child(3){background:var(--gold)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px}
+.kicker{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:600;margin-bottom:6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pill{background:var(--soft);color:var(--ink);padding:3px 9px;border-radius:99px;letter-spacing:.06em}
+.pill.type{background:var(--ink);color:#fff}
+.title{font-size:24px;margin:2px 0 4px;line-height:1.2}
+.goal{color:var(--dim);font-size:14px;margin:0}
+h3{font-size:18px;margin:0 0 10px}
+.word{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--line)}
+.word:first-of-type{border-top:none;padding-top:2px}
+.wtxt{flex:1;min-width:0}
+.de{font-weight:650;font-size:17px}
+.en{color:var(--dim);font-size:13.5px}
+.ex{font-size:14.5px;margin-top:3px;color:#34343A;font-style:italic}
+.btn{appearance:none;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:11px;
+  padding:10px 14px;font:600 14px/1 -apple-system,BlinkMacSystemFont,sans-serif;cursor:pointer;touch-action:manipulation}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn.red{background:var(--red);color:#fff;border-color:var(--red)}
+.btn.small{padding:8px 10px;font-size:13px}
+.btn:disabled{opacity:.4}
+.icon{width:38px;height:38px;border-radius:50%;padding:0;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.icon svg{width:17px;height:17px}
+.text{font-size:16.5px;line-height:1.7;margin:0 0 12px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.task{background:var(--soft);border-radius:12px;padding:12px 14px;font-size:14.5px;margin-bottom:12px}
+.task b{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:3px}
+.link{display:block;margin-top:10px;color:var(--red);font-weight:600;text-decoration:none}
+.say{border-top:1px solid var(--line);padding:14px 0}
+.say:first-of-type{border-top:none;padding-top:4px}
+.sayt{font-size:16.5px;font-weight:600;margin-bottom:10px}
+.res{margin-top:10px;font-size:14px;border-radius:10px;padding:10px 12px;display:none}
+.res.show{display:block}
+.res.good{background:#E8F2EC;color:#1F4B37}
+.res.mid{background:#FBF3E0;color:#6A4D0C}
+.res.low{background:#F8E7E5;color:#6E201C}
+.res .mk{font-weight:700}
+.miss{text-decoration:underline wavy var(--red);text-underline-offset:3px}
+textarea,input[type=text],input[type=date]{width:100%;border:1px solid var(--line);border-radius:11px;padding:11px 12px;
+  font:16px/1.5 -apple-system,BlinkMacSystemFont,sans-serif;background:#FFFDF9;color:var(--ink)}
+textarea{min-height:130px;resize:vertical}
+.hint{font-size:12.5px;color:var(--dim);margin:6px 0 0}
+.q{margin-bottom:16px}
+.qt{font-weight:600;margin-bottom:8px}
+.opt{display:block;width:100%;text-align:left;margin-bottom:6px;padding:11px 13px;border:1px solid var(--line);
+  border-radius:11px;background:var(--card);font:15px/1.35 -apple-system,BlinkMacSystemFont,sans-serif;color:var(--ink)}
+.opt.right{border-color:var(--ok);background:#E8F2EC}
+.opt.wrong{border-color:var(--bad);background:#F8E7E5}
+.done-bar{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.nav{position:fixed;left:0;right:0;bottom:0;background:rgba(246,243,238,.94);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  border-top:1px solid var(--line);display:flex;justify-content:center;padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px))}
+.nav button{flex:1;max-width:160px;background:none;border:none;font:600 12px/1.2 -apple-system,sans-serif;color:var(--dim);padding:6px 4px;display:flex;flex-direction:column;align-items:center;gap:3px}
+.nav button svg{width:22px;height:22px}
+.nav button.on{color:var(--red)}
+.badge{background:var(--red);color:#fff;border-radius:99px;font-size:10px;padding:1px 6px;margin-left:3px}
+.fc{min-height:230px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;cursor:pointer}
+.fc .de{font-size:26px}
+.fc .ex{margin-top:10px}
+.fc .en{font-size:17px;margin-top:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.arch{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid var(--line);cursor:pointer}
+.arch:first-child{border-top:none}
+.arch .n{font-size:12px;color:var(--dim);width:54px}
+.arch .t{flex:1;font-weight:600;font-size:14.5px}
+.arch .c{color:var(--ok);font-weight:700;width:20px;text-align:right}
+.wk{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:700;margin:16px 0 4px}
+.muted{color:var(--dim);font-size:14px}
+.center{text-align:center}
+.install{background:#FFF7E8;border:1px solid #EFDDB6}
+.hidden{display:none!important}
+.stepnav{display:flex;justify-content:space-between;gap:8px;margin-bottom:14px}
+@media (prefers-reduced-motion:reduce){.btn:active{transform:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <h1>Täglich<span>.</span></h1>
+    <div class="meta" id="meta"></div>
+  </div>
+  <div class="flag"><i></i><i></i><i></i></div>
+
+  <div id="installTip" class="card install hidden">
+    <h3>Als App installieren</h3>
+    <p class="muted" style="margin:0 0 10px">In Safari: tap the Share button, then <b>Zum Home-Bildschirm</b> / <b>Add to Home Screen</b>. It opens full screen like an app, and progress stays on this phone.</p>
+    <button class="btn small" onclick="hideTip()">Verstanden</button>
+  </div>
+
+  <main id="view"></main>
+</div>
+
+<nav class="nav" aria-label="Navigation">
+  <button id="nToday" class="on" onclick="go('today')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Heute</button>
+  <button id="nCards" onclick="go('cards')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="6" width="14" height="14" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v11"/></svg><span>Karten<span id="due"></span></span></button>
+  <button id="nArch" onclick="go('arch')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Alle Tage</button>
+</nav>
+
+<script>
+/* ============ state ============ */
+const KEY = "td-v1";
+let S = load();
+let DATA = null, TAB = "today", VIEWDAY = null, fcFlip = false;
+function load(){ try{ return Object.assign({start:null,done:{},scores:{},notes:{},srs:{},tipHidden:false}, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){ return {start:null,done:{},scores:{},notes:{},srs:{},tipHidden:false}; } }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+const jsa = v => JSON.stringify(v).replace(/'/g,"&#39;");
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const TYPE = {wortschatz:"Wortschatz",lesen:"Lesen",sprechen:"Sprechen",grammatik:"Grammatik",hoeren:"Hören",schreiben:"Schreiben",review:"Rückblick"};
+const I_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
+
+/* ============ dates ============ */
+function todayISO(){ const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function dayNumber(){
+  if(!S.start){ S.start = todayISO(); save(); }
+  const a = new Date(S.start+"T00:00:00"), b = new Date(todayISO()+"T00:00:00");
+  return Math.max(1, Math.round((b-a)/86400000)+1);
+}
+function lessonFor(n){
+  const total = DATA.days.length;
+  if(n <= total) return DATA.days[n-1];
+  // after day 56: rotating review of past weeks
+  const wk = ((n - total - 1) % DATA.weeks.length) + 1;
+  return {day:n, week:wk, theme:DATA.weeks[wk-1].theme, t:"review", ti:"Wiederholung: "+DATA.weeks[wk-1].theme, loop:true};
+}
+function streak(){
+  let s=0, n=dayNumber();
+  if(!S.done[n]) n--;
+  while(n>0 && S.done[n]){ s++; n--; }
+  return s;
+}
+
+/* ============ speech out ============ */
+let deVoice = null;
+function pickVoice(){
+  const v = speechSynthesis.getVoices().filter(x => /^de(-|_)/i.test(x.lang));
+  deVoice = v.find(x => /DE/i.test(x.lang) && /(Anna|Helena|Petra|Markus|Google)/i.test(x.name)) || v[0] || null;
+}
+if("speechSynthesis" in window){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+function speak(text, rate){
+  if(!("speechSynthesis" in window)) { alert("Audio is not available in this browser."); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "de-DE"; if(deVoice) u.voice = deVoice;
+  u.rate = rate || S.rate || 0.9;
+  speechSynthesis.speak(u);
+}
+
+/* ============ speech in ============ */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+function norm(s){ return s.toLowerCase().replace(/[„“"'.,!?;:()\-–]/g," ").replace(/ß/g,"ss").replace(/\s+/g," ").trim(); }
+function compare(target, heard){
+  const t = norm(target).split(" "), h = new Set(norm(heard).split(" "));
+  let hit = 0;
+  const marked = target.split(/\s+/).map(w => { const ok = h.has(norm(w)); if(ok) hit++; return ok ? esc(w) : '<span class="miss">'+esc(w)+'</span>'; });
+  const pct = Math.round(100 * hit / t.length);
+  return {pct, html: marked.join(" ")};
+}
+function showResult(id, target, heard){
+  const r = document.getElementById(id), c = compare(target, heard);
+  r.className = "res show " + (c.pct>=85?"good":c.pct>=60?"mid":"low");
+  r.innerHTML = '<div class="mk">'+c.pct+'% erkannt</div><div style="margin-top:4px">Gehört: „'+esc(heard||"…")+'“</div><div style="margin-top:6px">'+c.html+'</div>'
+    + '<div class="hint">Underlined words were not recognised. Listen to them again and repeat slowly.</div>';
+}
+function listen(i, target){
+  const btn = document.getElementById("mic"+i);
+  if(!SR){ document.getElementById("typed"+i).focus(); return; }
+  const rec = new SR();
+  rec.lang = "de-DE"; rec.interimResults = false; rec.maxAlternatives = 1;
+  btn.textContent = "Ich höre zu …"; btn.disabled = true;
+  rec.onresult = e => showResult("res"+i, target, e.results[0][0].transcript);
+  rec.onerror = e => { const r=document.getElementById("res"+i); r.className="res show low";
+    r.innerHTML = "Mikrofon nicht verfügbar ("+esc(e.error)+"). Use the keyboard mic below instead."; };
+  rec.onend = () => { btn.textContent = "Sprechen"; btn.disabled = false; };
+  try{ rec.start(); }catch(e){ btn.textContent="Sprechen"; btn.disabled=false; }
+}
+function checkTyped(i, target){
+  const v = document.getElementById("typed"+i).value;
+  if(v.trim()) showResult("res"+i, target, v);
+}
+
+/* recording for self-comparison */
+let mediaRec = null, chunks = [];
+async function recordToggle(i){
+  const b = document.getElementById("rec"+i);
+  if(mediaRec && mediaRec.state === "recording"){ mediaRec.stop(); return; }
+  if(!navigator.mediaDevices || !window.MediaRecorder){ alert("Recording is not supported in this browser."); return; }
+  try{
+    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+    chunks = []; mediaRec = new MediaRecorder(stream);
+    mediaRec.ondataavailable = e => chunks.push(e.data);
+    mediaRec.onstop = () => {
+      stream.getTracks().forEach(t=>t.stop());
+      const url = URL.createObjectURL(new Blob(chunks, {type: mediaRec.mimeType || "audio/mp4"}));
+      const a = document.getElementById("play"+i); a.src = url; a.classList.remove("hidden");
+      b.textContent = "Aufnehmen";
+    };
+    mediaRec.start(); b.textContent = "Stopp";
+  }catch(e){ alert("Microphone permission is needed for recording."); }
+}
+
+/* ============ SRS flashcards ============ */
+function wordId(w){ return w[0]; }
+function unlockedWords(){
+  const n = Math.min(dayNumber(), DATA.days.length), out = [];
+  DATA.days.slice(0, n).forEach(d => (d.w||[]).forEach(w => out.push(w)));
+  return out;
+}
+function dueWords(){
+  const now = Date.now();
+  return unlockedWords().filter(w => { const s = S.srs[wordId(w)]; return !s || s.due <= now; });
+}
+function grade(w, g){
+  const id = wordId(w), s = S.srs[id] || {iv:0, ease:2.5, due:0};
+  if(g === 0){ s.iv = 0; s.ease = Math.max(1.3, s.ease - .2); s.due = Date.now() + 10*60*1000; }
+  else {
+    s.iv = s.iv === 0 ? (g===2?3:1) : Math.round(s.iv * s.ease * (g===2?1.3:1));
+    if(g===2) s.ease += .1;
+    s.due = Date.now() + s.iv*86400000;
+  }
+  S.srs[id] = s; save(); fcFlip = false; render();
+}
+
+/* ============ views ============ */
+function go(t, day){
+  TAB = t; VIEWDAY = day || null; fcFlip = false;
+  ["today","cards","arch"].forEach(x => document.getElementById({today:"nToday",cards:"nCards",arch:"nArch"}[x]).classList.toggle("on", x===t));
+  render(); window.scrollTo(0,0);
+}
+function render(){
+  const n = dayNumber();
+  document.getElementById("meta").innerHTML = "Tag <b>"+n+"</b><br>Serie "+streak()+" Tage";
+  const d = dueWords().length;
+  document.getElementById("due").innerHTML = d ? '<span class="badge">'+d+'</span>' : "";
+  const v = document.getElementById("view");
+  if(TAB === "cards") v.innerHTML = cardsView();
+  else if(TAB === "arch") v.innerHTML = archView();
+  else v.innerHTML = dayView(VIEWDAY || n);
+}
+
+function reviewWords(week){
+  const out = [];
+  DATA.days.filter(d => d.week === week && d.w).forEach(d => d.w.forEach(w => out.push(w)));
+  return out;
+}
+function reviewQuiz(week, seed){
+  const ws = reviewWords(week), all = DATA.days.flatMap(d => d.w||[]);
+  let r = seed * 9301 + 49297; const rnd = () => (r = (r * 9301 + 49297) % 233280) / 233280;
+  const pick = ws.slice().sort(() => rnd() - .5).slice(0, 6);
+  return pick.map(w => {
+    const wrong = all.filter(x => x[1] !== w[1]).sort(() => rnd() - .5).slice(0, 2).map(x => x[1]);
+    const opts = [w[1], ...wrong].sort(() => rnd() - .5);
+    return ["„"+w[0]+"“ bedeutet …", opts, opts.indexOf(w[1])];
+  });
+}
+
+function dayView(n){
+  const L = lessonFor(n), isToday = n === dayNumber(), wk = DATA.weeks[(L.week||1)-1];
+  let h = "";
+  h += '<div class="stepnav"><button class="btn small" '+(n<=1?"disabled":"")+' onclick="go(\'today\','+(n-1)+')">‹ Tag '+(n-1)+'</button>'
+     + (isToday ? '' : '<button class="btn small" onclick="go(\'today\')">Heute</button>')
+     + '<button class="btn small" onclick="go(\'today\','+(n+1)+')">Tag '+(n+1)+' ›</button></div>';
+
+  h += '<section class="card"><div class="kicker"><span class="pill type">'+TYPE[L.t]+'</span><span class="pill">Woche '+L.week+' · '+esc(L.theme)+'</span>'+(isToday?'<span class="pill">Heute</span>':'')+'</div>'
+     + '<h2 class="title">'+esc(L.ti)+'</h2><p class="goal">'+esc(wk?wk.goal:"")+'</p></section>';
+
+  if(L.t === "review"){
+    const ws = reviewWords(L.week);
+    h += '<section class="card"><h3>Wörter der Woche</h3>' + ws.map(wordRow).join("") + '</section>';
+    const rq = reviewQuiz(L.week, n);
+    h += quizBlock(n, rq);
+    h += '<section class="card"><div class="task"><b>Aufgabe</b>Pick your best recording from this week and record it once more. Then open <b>Karten</b> and clear every due card.</div></section>';
+  } else {
+    if(L.w && L.w.length) h += '<section class="card"><h3>Wortschatz</h3>' + L.w.map(wordRow).join("") + '</section>';
+    if(L.x){
+      const label = {lesen:"Text", sprechen:"Mustertext", grammatik:"Regel", schreiben:"Mustertext"}[L.t] || "Text";
+      h += '<section class="card"><h3>'+label+'</h3><p class="text">'+esc(L.x)+'</p>'
+         + '<div class="row"><button class="btn" onclick="speak(DATA.days['+(n-1)+'].x,0.85)">Langsam vorlesen</button>'
+         + '<button class="btn" onclick="speak(DATA.days['+(n-1)+'].x,1)">Normal</button>'
+         + '<button class="btn" onclick="speechSynthesis.cancel()">Stopp</button></div></section>';
+    }
+    h += '<section class="card"><div class="task"><b>Aufgabe</b>'+esc(L.task)+'</div>'
+       + (L.ln ? '<a class="link" href="'+esc(L.ln[1])+'" target="_blank" rel="noopener">→ '+esc(L.ln[0])+'</a>' : '')
+       + '</section>';
+    if(L.say && L.say.length) h += speakBlock(L.say);
+    if(L.t === "schreiben" || L.t === "sprechen"){
+      h += '<section class="card"><h3>'+(L.t==="schreiben"?"Dein Text":"Deine Notizen")+'</h3>'
+         + '<textarea id="note" placeholder="Hier schreiben …" oninput="saveNote('+n+')">'+esc(S.notes[n]||"")+'</textarea>'
+         + '<p class="hint">Saved on this phone automatically.</p></section>';
+    }
+    if(L.q && L.q.length) h += quizBlock(n, L.q);
+  }
+
+  const done = !!S.done[n];
+  h += '<section class="card done-bar"><div><b>'+(done?"Erledigt.":"Fertig für heute?")+'</b><div class="muted">'+(done?"Gut gemacht. Bis morgen.":"Mark the day to keep your streak.")+'</div></div>'
+     + '<button class="btn '+(done?"":"red")+'" onclick="toggleDone('+n+')">'+(done?"Rückgängig":"Tag erledigt")+'</button></section>';
+  return h;
+}
+function wordRow(w){
+  return '<div class="word"><button class="btn icon" aria-label="Anhören" onclick=\'speak('+jsa(w[0]+". "+w[2])+')\'>'+I_PLAY+'</button>'
+    + '<div class="wtxt"><div class="de">'+esc(w[0])+'</div><div class="en">'+esc(w[1])+'</div><div class="ex">'+esc(w[2])+'</div></div></div>';
+}
+function speakBlock(list){
+  let h = '<section class="card"><h3>Sprechtraining</h3><p class="muted" style="margin:-4px 0 10px">Listen, then say it. The phone shows what it understood.'
+    + (SR ? '' : ' Speech recognition is not available here, so tap the text box and use the <b>microphone on your German keyboard</b>.') + '</p>';
+  list.forEach((s, i) => {
+    const js = jsa(s);
+    h += '<div class="say"><div class="sayt">'+esc(s)+'</div><div class="row">'
+      + '<button class="btn" onclick=\'speak('+js+')\'>Anhören</button>'
+      + (SR ? '<button class="btn primary" id="mic'+i+'" onclick=\'listen('+i+','+js+')\'>Sprechen</button>' : '')
+      + '<button class="btn" id="rec'+i+'" onclick="recordToggle('+i+')">Aufnehmen</button></div>'
+      + '<audio id="play'+i+'" class="hidden" controls style="width:100%;margin-top:10px"></audio>'
+      + '<div style="margin-top:10px"><input type="text" id="typed'+i+'" lang="de" autocomplete="off" autocapitalize="sentences" placeholder="Oder: Tastatur-Mikrofon (Deutsch) antippen und sprechen" onchange=\'checkTyped('+i+','+js+')\'></div>'
+      + '<div class="res" id="res'+i+'"></div></div>';
+  });
+  return h + '</section>';
+}
+function quizBlock(n, qs){
+  const sc = S.scores[n];
+  let h = '<section class="card"><h3>Kurztest</h3>';
+  qs.forEach((q, i) => {
+    h += '<div class="q"><div class="qt">'+(i+1)+'. '+esc(q[0])+'</div>';
+    q[1].forEach((o, j) => {
+      const ans = sc && sc.a ? sc.a[i] : undefined;
+      let c = "opt"; if(ans !== undefined){ if(j===q[2]) c+=" right"; else if(ans===j) c+=" wrong"; }
+      h += '<button class="'+c+'" '+(ans!==undefined?"disabled":"")+' onclick="answer('+n+','+i+','+j+','+qs.length+')">'+esc(o)+'</button>';
+    });
+    h += '</div>';
+  });
+  if(sc && sc.a && Object.keys(sc.a).length === qs.length){
+    const qsCorrect = qs.reduce((t,q,i)=>t+(sc.a[i]===q[2]?1:0),0);
+    h += '<div class="row" style="justify-content:space-between"><b>'+qsCorrect+'/'+qs.length+' richtig</b><button class="btn small" onclick="resetQuiz('+n+')">Nochmal</button></div>';
+  }
+  return h + '</section>';
+}
+function answer(n, i, j){
+  S.scores[n] = S.scores[n] || {a:{}}; S.scores[n].a[i] = j; save(); render();
+}
+function resetQuiz(n){ delete S.scores[n]; save(); render(); }
+function saveNote(n){ S.notes[n] = document.getElementById("note").value; save(); }
+function toggleDone(n){ if(S.done[n]) delete S.done[n]; else S.done[n] = true; save(); render(); }
+
+function cardsView(){
+  const due = dueWords(), total = unlockedWords().length;
+  if(!due.length){
+    return '<section class="card center"><h3>Keine Karten fällig</h3><p class="muted">All '+total+' words are scheduled for later. New cards unlock with each day.</p></section>';
+  }
+  const w = due[0];
+  let h = '<p class="muted center">'+due.length+' fällig · '+total+' Wörter insgesamt</p>';
+  h += '<section class="card fc" onclick="fcFlip=!fcFlip;render()"><div class="de">'+esc(w[0])+'</div>'
+     + (fcFlip ? '<div class="en">'+esc(w[1])+'</div><div class="ex">'+esc(w[2])+'</div>' : '<p class="muted" style="margin-top:14px">Say the meaning, then tap to check.</p>')
+     + '</section>';
+  h += '<div class="row" style="justify-content:center"><button class="btn" onclick=\'speak('+jsa(w[0]+". "+w[2])+')\'>Anhören</button></div>';
+  if(fcFlip){
+    const idx = unlockedWords().findIndex(x => x[0] === w[0]);
+    h += '<div class="grid3"><button class="btn" onclick="gradeIdx('+idx+',0)">Nochmal</button><button class="btn primary" onclick="gradeIdx('+idx+',1)">Gut</button><button class="btn" onclick="gradeIdx('+idx+',2)">Leicht</button></div>';
+  }
+  return h;
+}
+function gradeIdx(i, g){ grade(unlockedWords()[i], g); }
+
+function archView(){
+  let h = '<section class="card">', cur = 0, today = dayNumber();
+  DATA.days.forEach(d => {
+    if(d.week !== cur){ cur = d.week; h += '<div class="wk">Woche '+cur+' · '+esc(DATA.weeks[cur-1].theme)+'</div>'; }
+    const locked = d.day > today;
+    h += '<div class="arch" '+(locked?'style="opacity:.45"':'')+' onclick="go(\'today\','+d.day+')"><span class="n">Tag '+d.day+'</span><span class="t">'+esc(d.ti)+'</span><span class="c">'+(S.done[d.day]?"✓":"")+'</span></div>';
+  });
+  h += '</section>';
+  h += '<section class="card"><h3>Einstellungen</h3><label class="muted">Startdatum (Tag 1)</label>'
+     + '<input type="date" id="sd" value="'+esc(S.start||todayISO())+'" onchange="setStart(this.value)">'
+     + '<p class="hint">Must match the start date in the email script, otherwise the day numbers drift.</p>'
+     + '<label class="muted" style="display:block;margin-top:14px">Sprechtempo</label>'
+     + '<div class="row"><button class="btn small" onclick="setRate(.8)">Langsam</button><button class="btn small" onclick="setRate(.9)">Mittel</button><button class="btn small" onclick="setRate(1)">Normal</button></div>'
+     + '<p class="hint">Current: '+(S.rate||0.9)+'. Audio uses the iPhone\'s built-in German voice. Better voices can be downloaded in iOS Settings → Accessibility → Spoken Content → Voices → German.</p></section>';
+  return h;
+}
+function setStart(v){ if(v){ S.start = v; save(); render(); } }
+function setRate(r){ S.rate = r; save(); speak("Das ist die neue Geschwindigkeit.", r); render(); }
+function hideTip(){ S.tipHidden = true; save(); document.getElementById("installTip").classList.add("hidden"); }
+
+/* ============ boot ============ */
+(async function(){
+  const p = new URLSearchParams(location.search);
+  if(p.get("start") && /^\d{4}-\d{2}-\d{2}$/.test(p.get("start")) && !S.start){ S.start = p.get("start"); save(); }
+  if(p.get("start") && /^\d{4}-\d{2}-\d{2}$/.test(p.get("start")) && S.start !== p.get("start")){ S.start = p.get("start"); save(); }
+  const standalone = window.navigator.standalone || matchMedia("(display-mode: standalone)").matches;
+  if(!standalone && !S.tipHidden) document.getElementById("installTip").classList.remove("hidden");
+  try{
+    const r = await fetch("lessons.json", {cache:"no-cache"});
+    DATA = await r.json();
+  }catch(e){
+    document.getElementById("view").innerHTML = '<section class="card">Lektionen konnten nicht geladen werden. Check the connection and reopen.</section>';
+    return;
+  }
+  const d = parseInt(p.get("day"), 10);
+  go("today", d > 0 ? d : null);
+  if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
+})();
+</script>
+</body>
+</html>
