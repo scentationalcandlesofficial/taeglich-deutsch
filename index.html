@@ -134,6 +134,20 @@ textarea{min-height:130px;resize:vertical}
 </nav>
 
 <script>
+/* ============ completion ping ============ */
+/* Paste the web app /exec URL and the same secret word you put in Code.gs. */
+const DONE_ENDPOINT = "https://script.google.com/macros/s/AKfycbw0hhf9fAiUFjvMfpk346ALmtN5X502Y9_lZEe-0zGdJ588z6MR8s8Uf1LP9PoM_ZBUHg/exec";
+const DONE_KEY = "Done";
+
+function pingDone(day){
+  if(!DONE_ENDPOINT) return;
+  const url = DONE_ENDPOINT + "?day=" + day + "&key=" + encodeURIComponent(DONE_KEY);
+  try{
+    fetch(url, {mode:"no-cors", cache:"no-store"}).catch(() => { new Image().src = url; });
+  }catch(e){ try{ new Image().src = url; }catch(e2){} }
+  S.pinged = S.pinged || {}; S.pinged[day] = true; save();
+}
+
 /* ============ state ============ */
 const KEY = "td-v1";
 let S = load();
@@ -329,7 +343,7 @@ function dayView(n){
   }
 
   const done = !!S.done[n];
-  h += '<section class="card done-bar"><div><b>'+(done?"Erledigt.":"Fertig für heute?")+'</b><div class="muted">'+(done?"Gut gemacht. Bis morgen.":"Mark the day to keep your streak.")+'</div></div>'
+  h += '<section class="card done-bar"><div><b>'+(done?"Erledigt.":"Fertig für heute?")+'</b><div class="muted">'+(done?(DONE_ENDPOINT?"Die nächste Lektion ist freigeschaltet.":"Gut gemacht. Bis morgen."):"Die nächste Lektion kommt erst, wenn du hier tippst.")+'</div></div>'
      + '<button class="btn '+(done?"":"red")+'" onclick="toggleDone('+n+')">'+(done?"Rückgängig":"Tag erledigt")+'</button></section>';
   return h;
 }
@@ -375,7 +389,7 @@ function answer(n, i, j){
 }
 function resetQuiz(n){ delete S.scores[n]; save(); render(); }
 function saveNote(n){ S.notes[n] = document.getElementById("note").value; save(); }
-function toggleDone(n){ if(S.done[n]) delete S.done[n]; else S.done[n] = true; save(); render(); }
+function toggleDone(n){ if(S.done[n]) delete S.done[n]; else { S.done[n] = true; pingDone(n); } save(); render(); }
 
 function cardsView(){
   const due = dueWords(), total = unlockedWords().length;
